@@ -6,7 +6,7 @@ var util = require('util');
 var split = require("split");
 
 var tailStream = require('tail-stream');
-var tail_stream = tailStream.createReadStream('./example.txt', {interval: 100});
+var tail_stream = tailStream.createReadStream('/tmp/logger.txt', {interval: 100});
 
 var app = express();
 
@@ -37,10 +37,11 @@ io.on('connection', function (socket) {
 });
 
 GetDataStream.prototype._transform = function(line, encoding, processed) {
-	io.emit('chat', {message: line.toString('utf8')});
+	console.log("sending data");
+	io.emit('chat', {message: JSON.stringify(JSON.parse(line.toString('utf8')), null, 1).toString()});
 	processed();
 }
 
 tail_stream.pipe(split()).pipe(new GetDataStream());
 
-server.listen('3000');
+server.listen('3010');
