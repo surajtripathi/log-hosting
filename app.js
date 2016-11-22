@@ -31,19 +31,25 @@ io.on('connection', function (socket) {
 	socket.on('disconnect', function () {
 		console.log("disconnected");
 	});
-	socket.on('message sent', function (data) {
+	/*socket.on('message sent', function (data) {
 		io.emit('chat1', {message: data.message});
-	});
+	});*/
 });
 
 GetDataStream.prototype._transform = function(line, encoding, processed) {
 	var data_to_send;
+	var red_color = false, parsed_data;
+	var utf_string = line.toString('utf8');
 	try {
-		data_to_send = JSON.stringify(JSON.parse(line.toString('utf8')), null, 1).toString();
+		parsed_data = JSON.parse(utf_string);
+		if (parsed_data.error) {
+			red_color = true;
+		}
+		data_to_send = JSON.stringify(parsed_data, null, 1);
 	} catch(e) {
-		data_to_send = line.toString('utf8');
+		data_to_send = utf_string;
 	}
-	io.emit('chat', {message: data_to_send});
+	io.emit('chat', {message: data_to_send, red: red_color});
 	processed();
 }
 

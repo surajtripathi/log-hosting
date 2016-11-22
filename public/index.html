@@ -18,7 +18,12 @@
 					console.log("data recieved");
 					jsonStr = data.message,  // THE OBJECT STRINGIFIED
 					regeStr = data.message;
-					var pre = $("<pre></pre>");
+					var pre;
+					if (data.red === true) {
+						pre = $("<pre style='color: red;'></pre>");
+					} else {
+						pre = $("<pre></pre>");
+					}
 					pre.text(data.message);
 					$('body').append(pre);
 					$('body').append($("<hr />"));
